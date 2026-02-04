@@ -1,0 +1,46 @@
+risk:
+  risk_per_trade: 0.01
+  max_daily_loss: 0.03
+  max_open_positions: 2
+  max_trades_per_day: 5
+  min_rr: 1.5
+
+strategy:
+  symbols: ["EURUSD", "GBPUSD"]
+  timeframe: "M15"
+  higher_timeframe: "H1"
+  ema_fast: 20
+  ema_slow: 50
+  liquidity_lookback: 8
+  fvg_lookback: 5
+  order_block_lookback: 12
+
+news:
+  enabled: true
+  calendar_provider: "tradingeconomics"
+  impact_levels: ["high", "medium"]
+  block_minutes_before: 30
+  block_minutes_after: 30
+  timezone: "UTC"
+
+execution:
+  lot_size: 0.1
+  max_slippage: 10
+  allow_weekends: false
+  trading_start: "06:00:00"
+  trading_end: "20:00:00"
+  magic_number: 202409
+
+broker:
+  login: 0
+  password: ""
+  server: ""
+  path: ""
+
+symbol_settings:
+  EURUSD:
+    pip_value: 10.0
+    pip_size: 0.0001
+  GBPUSD:
+    pip_value: 10.0
+    pip_size: 0.0001
