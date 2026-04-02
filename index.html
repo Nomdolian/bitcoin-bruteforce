@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TradeMind AI | Trading Journal</title>
+  <style>
+    :root {
+      --bg: #070b1a;
+      --bg-soft: #0e1530;
+      --card: rgba(16, 26, 58, 0.78);
+      --text: #e8ecff;
+      --muted: #a7b0d6;
+      --accent: #7c5cff;
+      --accent-2: #27d2ff;
+      --danger: #ff5f7f;
+      --success: #37e3a7;
+      --border: rgba(148, 163, 255, 0.2);
+      --shadow: 0 12px 34px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 12% 15%, rgba(124, 92, 255, 0.25), transparent 30%),
+        radial-gradient(circle at 80% 18%, rgba(39, 210, 255, 0.2), transparent 28%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      width: min(1100px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    section { padding: 4.5rem 0; }
+
+    h1, h2, h3 { line-height: 1.2; margin: 0 0 1rem; }
+
+    p { margin: 0 0 1rem; color: var(--muted); }
+
+    ul { margin: 0; padding-left: 1.1rem; }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(124, 92, 255, 0.15);
+      border: 1px solid var(--border);
+      color: #c9d1ff;
+      padding: .4rem .8rem;
+      border-radius: 999px;
+      font-size: .85rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero {
+      padding-top: 5.8rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 3.7rem);
+      max-width: 900px;
+      margin-inline: auto;
+    }
+
+    .hero .subheadline {
+      max-width: 780px;
+      margin: 1rem auto 2rem;
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+    }
+
+    .btn {
+      display: inline-block;
+      border: 0;
+      border-radius: 14px;
+      padding: .95rem 1.5rem;
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: var(--shadow);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 30px rgba(43, 126, 255, .35); }
+
+    .glow-grid {
+      margin-top: 2.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    .glow-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .glow-card strong { font-size: 1.3rem; }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 1.3rem;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.4rem;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .problem-list li,
+    .solution-list li,
+    .results-list li {
+      margin-bottom: .6rem;
+      color: #c6ceee;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+    }
+
+    .step .num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: .5rem;
+      display: inline-block;
+    }
+
+    .pricing {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.2rem;
+    }
+
+    .plan {
+      padding: 1.2rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--card);
+    }
+
+    .plan h3 { margin-bottom: .25rem; }
+    .price { font-size: 1.5rem; font-weight: 800; margin-bottom: .9rem; }
+
+    .plan.featured {
+      border: 1px solid rgba(39, 210, 255, .5);
+      transform: scale(1.02);
+      box-shadow: 0 0 0 1px rgba(39, 210, 255, .2), var(--shadow);
+    }
+
+    /* Interactive feature */
+    .ai-widget {
+      margin-top: 1rem;
+      display: grid;
+      gap: .8rem;
+    }
+
+    .controls {
+      display: grid;
+      gap: .6rem;
+    }
+
+    .controls label {
+      display: flex;
+      justify-content: space-between;
+      color: #d7ddf6;
+      font-weight: 600;
+      font-size: .95rem;
+    }
+
+    input[type="range"] { width: 100%; accent-color: var(--accent-2); }
+
+    .meter {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      overflow: hidden;
+    }
+
+    .meter > span {
+      display: block;
+      height: 100%;
+      width: 48%;
+      background: linear-gradient(90deg, var(--danger), #ffcf6f, var(--success));
+      transition: width .3s ease;
+    }
+
+    .insight {
+      margin-top: .6rem;
+      padding: .8rem 1rem;
+      border-radius: 12px;
+      background: rgba(56, 88, 188, .2);
+      border: 1px solid rgba(124, 92, 255, .35);
+      color: #d7defc;
+    }
+
+    .cta-end {
+      text-align: center;
+      padding-bottom: 5.5rem;
+    }
+
+    .footer-note { color: #909bc7; font-size: .9rem; margin-top: .7rem; }
+
+    @media (max-width: 900px) {
+      .split,
+      .steps,
+      .pricing,
+      .glow-grid { grid-template-columns: 1fr; }
+      .hero { padding-top: 4rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero container">
+    <span class="tag">AI-Powered Trading Journal</span>
+    <h1>90% of Traders Lose Money.<br />Here’s Why You’re One of Them.</h1>
+    <p class="subheadline">
+      TradeMind AI shows you exactly what you're doing wrong — and fixes it.<br />
+      No guessing. No emotions. Just data-driven improvement.
+    </p>
+    <a class="btn" href="#pricing">Get Access Now</a>
+
+    <div class="glow-grid">
+      <article class="glow-card"><strong>1,200+</strong><p>Trades analyzed weekly</p></article>
+      <article class="glow-card"><strong>87%</strong><p>Users report better discipline</p></article>
+      <article class="glow-card"><strong>24/7</strong><p>Behavioral insight engine</p></article>
+    </div>
+  </header>
+
+  <main>
+    <section class="container split" id="problem">
+      <article class="card">
+        <h2>The Problem</h2>
+        <p>You take trades. You win some. You lose most.</p>
+        <p>But you don’t actually know <strong>why</strong>.</p>
+        <p>So you keep repeating the same mistakes:</p>
+        <ul class="problem-list">
+          <li>Overtrading</li>
+          <li>Revenge trading</li>
+          <li>Poor risk management</li>
+          <li>Emotional entries</li>
+        </ul>
+        <p>And your account suffers.</p>
+      </article>
+
+      <article class="card">
+        <h2>The Solution</h2>
+        <p>TradeMind AI is your personal trading coach.</p>
+        <p>It tracks your trades, analyzes your behavior, and tells you:</p>
+        <ul class="solution-list">
+          <li>Your biggest mistakes</li>
+          <li>Your emotional patterns</li>
+          <li>Your strengths</li>
+          <li>Exactly what to fix</li>
+        </ul>
+        <p>It’s like having a professional trading psychologist watching every move you make.</p>
+      </article>
+    </section>
+
+    <section class="container" id="how-it-works">
+      <h2>How It Works</h2>
+      <div class="steps">
+        <article class="step"><span class="num">1</span><h3>Log your trades</h3><p>Capture entries, exits, setup, risk, and market context in seconds.</p></article>
+        <article class="step"><span class="num">2</span><h3>Get AI-powered analysis</h3><p>Our model finds hidden behavior patterns and execution weaknesses.</p></article>
+        <article class="step"><span class="num">3</span><h3>Improve your performance</h3><p>Follow clear next-step actions to increase consistency over time.</p></article>
+      </div>
+      <p style="margin-top: 1rem;">Simple. Powerful. Effective.</p>
+    </section>
+
+    <section class="container split" id="results">
+      <article class="card">
+        <h2>Results</h2>
+        <p>Traders using TradeMind AI:</p>
+        <ul class="results-list">
+          <li>Increase discipline</li>
+          <li>Reduce emotional trades</li>
+          <li>Improve consistency</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Live Discipline Simulator</h2>
+        <p>Adjust the sliders to see your estimated discipline score update in real time.</p>
+        <div class="ai-widget">
+          <div class="controls">
+            <label for="risk">Risk Management <span id="riskVal">70</span></label>
+            <input id="risk" type="range" min="0" max="100" value="70" />
+
+            <label for="emotion">Emotional Control <span id="emotionVal">60</span></label>
+            <input id="emotion" type="range" min="0" max="100" value="60" />
+
+            <label for="consistency">Execution Consistency <span id="consistencyVal">65</span></label>
+            <input id="consistency" type="range" min="0" max="100" value="65" />
+          </div>
+
+          <div class="meter"><span id="scoreBar"></span></div>
+          <p><strong>Discipline Score: <span id="score">65</span>/100</strong></p>
+          <div id="insight" class="insight">Insight: Strong foundation. Tighten emotional control to unlock consistency.</div>
+        </div>
+      </article>
+    </section>
+
+    <section class="container" id="pricing">
+      <h2>Pricing</h2>
+      <div class="pricing">
+        <article class="plan">
+          <h3>Starter</h3>
+          <div class="price">Free</div>
+          <ul><li>Trading Journal Template</li></ul>
+        </article>
+
+        <article class="plan featured">
+          <h3>Pro</h3>
+          <div class="price">$19/month</div>
+          <ul>
+            <li>AI Analysis</li>
+            <li>Performance Dashboard</li>
+          </ul>
+        </article>
+
+        <article class="plan">
+          <h3>Elite</h3>
+          <div class="price">$49/month</div>
+          <ul>
+            <li>Weekly Feedback</li>
+            <li>Strategy Optimization</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <section class="cta-end container">
+    <h2>Stop guessing.<br />Start improving.</h2>
+    <p>Get TradeMind AI now.</p>
+    <a class="btn" href="#">Get Access Now</a>
+    <p class="footer-note">Built for serious traders who want measurable progress.</p>
+  </section>
+
+  <script>
+    const risk = document.getElementById('risk');
+    const emotion = document.getElementById('emotion');
+    const consistency = document.getElementById('consistency');
+    const score = document.getElementById('score');
+    const scoreBar = document.getElementById('scoreBar');
+    const insight = document.getElementById('insight');
+
+    const riskVal = document.getElementById('riskVal');
+    const emotionVal = document.getElementById('emotionVal');
+    const consistencyVal = document.getElementById('consistencyVal');
+
+    function updateScore() {
+      riskVal.textContent = risk.value;
+      emotionVal.textContent = emotion.value;
+      consistencyVal.textContent = consistency.value;
+
+      const value = Math.round((Number(risk.value) * 0.4) + (Number(emotion.value) * 0.35) + (Number(consistency.value) * 0.25));
+
+      score.textContent = value;
+      scoreBar.style.width = `${value}%`;
+
+      if (value < 45) {
+        insight.textContent = 'Insight: Biggest leak is emotional execution. Reduce trade frequency and enforce stop-loss rules.';
+      } else if (value < 75) {
+        insight.textContent = 'Insight: Strong foundation. Tighten emotional control to unlock consistency.';
+      } else {
+        insight.textContent = 'Insight: Excellent discipline profile. Focus on scaling only A+ setups.';
+      }
+    }
+
+    [risk, emotion, consistency].forEach((input) => input.addEventListener('input', updateScore));
+    updateScore();
+  </script>
+</body>
+</html>
